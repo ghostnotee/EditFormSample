@@ -1,0 +1,91 @@
+﻿@page "/"
+@using EditFormSample.Models
+@using EditFormSample.StyleProvider
+
+<h3>FluentValidation Demo in  Blazor WASM</h3>
+<hr />
+<EditForm Model="@_person" OnSubmit="@SubmitFormAsync" class="container mt-4">
+    <CustomCssClassProvider TProviderType="BootstrapFieldCssClassProvider"/>
+    <FluentValidationValidator @ref="_fluentValidationValidator" Options="@(options => options.IncludeAllRuleSets())"/>
+    @* <ValidationSummary class="text-danger"/> *@
+
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name:</label>
+        <InputText id="firstName" class="form-control" @bind-Value="@_person.FirstName"/>
+        <CustomValidationMessage For="@(() => _person.FirstName)"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name:</label>
+        <InputText id="lastName" class="form-control" @bind-Value="@_person.LastName"/>
+        <CustomValidationMessage For="@(() => _person.LastName)"/>
+    </div>
+    <hr/>
+    <div class="mb-3">
+        <label for="age" class="form-label">Age:</label>
+        <InputNumber id="age" class="form-control" @bind-Value="@_person.Age"/>
+        <ValidationMessage For="@(() => _person.Age)" class="text-danger"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email Address:</label>
+        <InputText id="email" class="form-control" @bind-Value="@_person.EmailAddress"/>
+        <ValidationMessage For="@(() => _person.EmailAddress)" class="text-danger"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="addressLine1" class="form-label">Address Line 1:</label>
+        <InputText id="addressLine1" class="form-control" @bind-Value="@_person.Address.Line1"/>
+        <ValidationMessage For="@(() => _person.Address.Line1)" class="text-danger"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="addressLine2" class="form-label">Address Line 2:</label>
+        <InputText id="addressLine2" class="form-control" @bind-Value="@_person.Address.Line2"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="town" class="form-label">Town:</label>
+        <InputText id="town" class="form-control" @bind-Value="@_person.Address.Town"/>
+        <ValidationMessage For="@(() => _person.Address.Town)" class="text-danger"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="county" class="form-label">County:</label>
+        <InputText id="county" class="form-control" @bind-Value="@_person.Address.County"/>
+        <ValidationMessage For="@(() => _person.Address.County)" class="text-danger"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="postcode" class="form-label">Postcode:</label>
+        <InputText id="postcode" class="form-control" @bind-Value="@_person.Address.Postcode"/>
+        <ValidationMessage For="@(() => _person.Address.Postcode)" class="text-danger"/>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</EditForm>
+
+<br />
+<div class="container">
+    <button class="btn btn-secondary" @onclick="PartialValidate">Partial Validation</button>
+</div>
+
+
+
+@code {
+    private readonly Person _person = new();
+    private FluentValidationValidator? _fluentValidationValidator;
+
+    private async Task SubmitFormAsync()
+    {
+        if (await _fluentValidationValidator!.ValidateAsync())
+        {
+            Console.WriteLine("Form Submitted Successfully!");
+        }
+    }
+
+    private void PartialValidate()
+        => Console.WriteLine($"Partial validation result : {_fluentValidationValidator?.Validate(options => options.IncludeRuleSets("Names"))}");
+}

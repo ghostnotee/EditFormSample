@@ -1,0 +1,48 @@
+@using System.Linq.Expressions
+@typeparam TProperty
+
+@if (messages is not null && messages.Any())
+{
+    <ul class="custom-validation-message">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
+}
+
+<style>
+    .custom-validation-message {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0;
+        color: white;
+        background-color: red;
+        font-weight: bold;
+        font-size: 14px;
+        border-radius: 5px;
+        padding: 5px 10px;
+        width: fit-content;
+    }
+</style>
+
+@code {
+    [Parameter] public Expression<Func<TProperty>> For { get; set; } = default!;
+    private IEnumerable<string>? messages;
+
+    [CascadingParameter] private EditContext? EditContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (EditContext is not null)
+        {
+            EditContext.OnValidationStateChanged += (sender, args) =>
+            {
+                var fieldIdentifier = FieldIdentifier.Create(For);
+                messages = EditContext.GetValidationMessages(fieldIdentifier);
+                StateHasChanged();
+            };
+        }
+    }
+
+}
