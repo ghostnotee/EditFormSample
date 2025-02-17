@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using EditFormSample.Models
 @using EditFormSample.StyleProvider
+@using EditFormSample.SharedComponents
 
 <h3>FluentValidation Demo in  Blazor WASM</h3>
 <hr />
@@ -31,7 +32,7 @@
         <label for="email" class="form-label">Email Address:</label>
         <InputText id="email" class="form-control" @bind-Value="@_person.EmailAddress"/>
         <ValidationMessage For="@(() => _person.EmailAddress)" class="text-danger"/>
-    </div>
+    </div> 
 
     <div class="mb-3">
         <label for="addressLine1" class="form-label">Address Line 1:</label>
@@ -62,8 +63,16 @@
         <ValidationMessage For="@(() => _person.Address.Postcode)" class="text-danger"/>
     </div>
 
+    <div class="mb-3">
+        <label for="gender" class="form-check-label">Gender:</label>
+        <InputRadioGroup id="gender" @bind-Value="@_person.Gender">
+            <InputRadio Value='"Woman"' class="form-check-input"/>
+            <InputRadio Value='"Man"' class="form-check-input"/>
+        </InputRadioGroup>
+    </div>
+
     <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary">Save</button>
+        <BaseButton Type="BaseButton.ButtonType.Save">Kaydet</BaseButton>
     </div>
 </EditForm>
 

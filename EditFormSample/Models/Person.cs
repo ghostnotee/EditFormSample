@@ -7,6 +7,7 @@ public class Person
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public int? Age { get; set; }
+    public string? Gender { get; set; }
     public string? EmailAddress { get; set; }
     public Address Address { get; set; } = new();
 }
@@ -34,7 +35,7 @@ public class PersonValidator : AbstractValidator<Person>
         RuleFor(p => p.EmailAddress)
             .NotEmpty().WithMessage("You must enter an email address")
             .EmailAddress().WithMessage("You must provide a valid email address")
-            .MustAsync(async (email, _) => await IsUniqueAsync(email)).WithMessage("Email address must be unique");
+            .MustAsync(async (email, _) => !await IsUniqueAsync(email)).WithMessage("Email address must be unique");
 
         RuleFor(p => p.Address).SetValidator(new AddressValidator());
     }
